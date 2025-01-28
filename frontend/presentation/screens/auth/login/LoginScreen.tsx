@@ -1,13 +1,36 @@
-import { Button, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Button, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import DefaultTextInput from '../../../components/DefaultTextInput';
 import DefaultRoundedButton from '../../../components/DefaultRoundedButton';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../../navigator/MainStackNavigator';
+import styles from './Styles';
+import { useState } from 'react';
+import EmailValidator from '../../../utils/EmailValidator';
 
 interface Props extends StackScreenProps<RootStackParamList, 'LoginScreen'> { };
 
 
 export default function LoginScreen({ navigation, route }: Props) {
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleLogin = () => {
+        if (email === '' || password === '') {
+            Alert.alert('Todos los campos son requeridos');
+            return;
+        }
+
+        if (!EmailValidator(email)) {
+            Alert.alert('Correo electrónico inválido');
+            return;
+        }
+
+
+        console.log(email);
+        console.log(password);
+    }
+
     return (
         <View style={styles.container}>
             <Image style={styles.imageBackground} source={require('../../../../assets/city.jpg')}
@@ -17,12 +40,13 @@ export default function LoginScreen({ navigation, route }: Props) {
 
                 <Text style={styles.textLogin}>LOGIN</Text>
 
-                <DefaultTextInput placeholder="Correo electrónico" value="" onChangeText={text => { }} keyboardType="email-address" icon={require('../../../../assets/email.png')} />
+                <DefaultTextInput placeholder="Correo electrónico" value={email} onChangeText={setEmail} keyboardType="email-address" icon={require('../../../../assets/email.png')} />
 
-                <DefaultTextInput placeholder="Contraseña" value="hola" onChangeText={() => { }} icon={require('../../../../assets/password.png')} secureTextEntry={true} />
+                <DefaultTextInput placeholder="Contraseña" value={password} onChangeText={setPassword} icon={require('../../../../assets/password.png')} secureTextEntry={true} />
 
 
-                <DefaultRoundedButton text="INICIAR SESIÓN" onPress={() => { }} backgroundColor="green" />
+                <DefaultRoundedButton text="INICIAR SESIÓN" onPress={() => { handleLogin()
+                }} backgroundColor="red" />
 
                 <View style={styles.containerTextDontHaveAccount}>
                     <View style={styles.divider}></View>
@@ -30,65 +54,10 @@ export default function LoginScreen({ navigation, route }: Props) {
                     <View style={styles.divider}></View>
                 </View>
 
-                <DefaultRoundedButton text="REGISTRARSE" onPress={() => navigation.navigate('RegisterScreen')} backgroundColor='white' />
+                <DefaultRoundedButton text="REGISTRARSE" onPress={() => navigation.navigate('RegisterScreen')} backgroundColor='black' />
 
             </View>
 
         </View>
     );
-
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#000',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    imageBackground: {
-        width: '100%',
-        height: '100%',
-        opacity: 0.5,
-    },
-    form: {
-        width: '85%',
-        height: '70%',
-        position: 'absolute',
-        backgroundColor: 'rgba(255, 255, 255, 0.3)',
-        borderRadius: 25,
-        justifyContent: 'center',
-        paddingHorizontal: 30,
-    },
-    imageUser: {
-        width: 150,
-        height: 150,
-        alignSelf: 'center',
-        marginBottom: 20,
-    },
-    textLogin: {
-        color: '#fff',
-        fontWeight: 'bold',
-        fontSize: 25,
-        alignSelf: 'center',
-    },
-
-
-    containerTextDontHaveAccount: {
-        flexDirection: 'row',
-        alignSelf: 'center',
-        alignItems: 'center',
-        marginTop: 20,
-    },
-    textDontHaveAccount: {
-        color: '#fff',
-        fontSize: 15,
-    },
-    divider: {
-        height: 1,
-        width: 75,
-        backgroundColor: '#fff',
-        marginHorizontal: 5,
-    },
-
-});
