@@ -1,0 +1,36 @@
+# Backend
+/backend/node_modules/
+/backend/dist/
+/backend/.env
+/backend/.env.local
+/backend/*.log
+/backend/*.tsbuildinfo
+/backend/npm-debug.*
+/backend/yarn-debug.*
+/backend/yarn-error.*
+
+# Frontend
+/frontend/node_modules/
+/frontend/build/
+/frontend/.env
+/frontend/.env.local
+/frontend/*.log
+/frontend/.next/  # Para proyectos Next.js (si aplica)
+/frontend/out/     # Exportaciones de Next.js (si aplica)
+/frontend/npm-debug.*
+/frontend/yarn-debug.*
+/frontend/yarn-error.*
+
+# Logs generales
+*.log
+
+# macOS
+.DS_Store
+
+# Configuración de claves y certificados
+*.pem
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
