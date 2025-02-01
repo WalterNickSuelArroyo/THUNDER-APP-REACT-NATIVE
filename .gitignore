@@ -8,6 +8,7 @@
 /backend/npm-debug.*
 /backend/yarn-debug.*
 /backend/yarn-error.*
+/backend/serviceAccountKey.json
 
 # Frontend
 /frontend/node_modules/
