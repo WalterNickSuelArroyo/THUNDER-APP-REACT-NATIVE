@@ -9,7 +9,7 @@ import storage = require("../utils/cloud_storage");
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private usersRepository: Repository<User>
+    @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
 
   create(user: CreateUserDto) {
@@ -18,13 +18,13 @@ export class UsersService {
   }
 
   findAll() {
-    return this.usersRepository.find();
+    return this.usersRepository.find({ relations: ["roles"] });
   }
 
   async update(id: number, user: UpdateUserDto) {
     const userFound = await this.usersRepository.findOneBy({ id: id });
     if (!userFound) {
-      return new HttpException("Usuario no encontrado", HttpStatus.NOT_FOUND);
+      throw new HttpException("Usuario no encontrado", HttpStatus.NOT_FOUND);
     }
 
     const updatedUser = Object.assign(userFound, user);
@@ -40,7 +40,7 @@ export class UsersService {
     console.log(url);
 
     if (url === undefined && url === null) {
-      return new HttpException(
+      throw new HttpException(
         "Error al subir la imagen",
         HttpStatus.INTERNAL_SERVER_ERROR
       );
@@ -48,7 +48,7 @@ export class UsersService {
 
     const userFound = await this.usersRepository.findOneBy({ id: id });
     if (!userFound) {
-      return new HttpException("Usuario no encontrado", HttpStatus.NOT_FOUND);
+      throw new HttpException("Usuario no encontrado", HttpStatus.NOT_FOUND);
     }
     user.image = url;
 
