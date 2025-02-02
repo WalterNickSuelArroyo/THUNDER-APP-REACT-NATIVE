@@ -8,6 +8,8 @@ import { useState } from "react";
 import EmailValidator from "../../../utils/EmailValidator";
 import PasswordValidator from "../../../utils/PasswordValidator";
 import PhoneValidator from "../../../utils/PhoneValidator";
+import { container } from "../../../../di/container";
+import { RegisterViewModel } from "./RegisterViewModel";
 
 interface Props extends StackScreenProps<RootStackParamList, 'RegisterScreen'> { };
 
@@ -20,7 +22,9 @@ export default function RegisterScreen({ navigation, route }: Props) {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    const handleRegister = () => {
+    const registerViewModel: RegisterViewModel = container.resolve('registerViewModel');
+
+    const handleRegister = async () => {
         if (name === '' || lastName === '' || email === '' || phone === '' || password === '' || confirmPassword === '') {
             Alert.alert('Todos los campos son requeridos');
             return;
@@ -46,12 +50,15 @@ export default function RegisterScreen({ navigation, route }: Props) {
             return;
         }
 
-        console.log("Name: ", name);
-        console.log("Last Name: ", lastName);
-        console.log("Email: ", email);
-        console.log("Phone: ", phone);
-        console.log("Password: ", password);
-        console.log("Confirm Password: ", confirmPassword);
+        const response = await registerViewModel.register({
+            name: name,
+            lastName: lastName,
+            email: email,
+            phone: phone,
+            password: password
+        });
+
+        console.log(response);
 
     }
 

@@ -9,6 +9,11 @@ import EmailValidator from '../../../utils/EmailValidator';
 import { ApiRequestHandler } from '../../../../data/sources/remote/api/ApiRequestHandler';
 import { AuthResponse } from '../../../../domain/models/AuthResponse';
 import { defaultErrorResponse, ErrorResponse } from '../../../../domain/models/ErrorResponse';
+import { AuthService } from '../../../../data/sources/remote/services/AuthService';
+import { AuthRepositoryImpl } from '../../../../data/repository/AuthRepositoryImpl';
+import { LoginUseCase } from '../../../../domain/useCases/auth/LoginUseCase';
+import { LoginViewModel } from './LoginViewModel';
+import { container } from '../../../../di/container';
 
 interface Props extends StackScreenProps<RootStackParamList, 'LoginScreen'> { };
 
@@ -18,46 +23,22 @@ export default function LoginScreen({ navigation, route }: Props) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    const loginViewModel = container.resolve('loginViewModel');
+
     const handleLogin = async () => {
         if (email === '' || password === '') {
             Alert.alert('Todos los campos son requeridos');
             return;
         }
 
-        // if (!EmailValidator(email)) {
-        //     Alert.alert('Correo electrónico inválido');
-        //     return;
-        // }
-
-        await login(email, password);
-    }
-
-    const login = async (email: string, password: string): Promise<AuthResponse | ErrorResponse> => {
-        try {
-            const response = await ApiRequestHandler.post<AuthResponse>('auth/login', {
-                email: email,
-                password: password
-            })
-            console.log(response.data);
-            return response.data;
-        } catch (error: any) {
-            if (error.response) {
-                const errorData: ErrorResponse = error.response.data;
-                if (Array.isArray(errorData.message)) {
-                    console.error('Errores multiples del servidor', errorData.message.join(', '));
-                }
-                else {
-                    console.error('Error unico del servidor', errorData.message);
-                }
-                return errorData;
-            } else {
-                console.error('Error en la peticion', error.message);
-                return defaultErrorResponse;
-            }
-
+        if (!EmailValidator(email)) {
+            Alert.alert('Correo electrónico inválido');
+            return;
         }
 
-    };
+        const response = await loginViewModel.login(email, password);
+        console.log(response);
+    }
 
     return (
         <View style={styles.container}>
