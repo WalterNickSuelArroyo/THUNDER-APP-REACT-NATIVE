@@ -26,7 +26,7 @@ import { JwtRole } from "src/auth/jwt/jwt-role";
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @HasRoles(JwtRole.ADMIN, JwtRole.CLIENT)
+  @HasRoles(JwtRole.DRIVER, JwtRole.CLIENT)
   @UseGuards(JwtAuthGuard, JwtRolesGuard)
   @Get()
   findAll() {

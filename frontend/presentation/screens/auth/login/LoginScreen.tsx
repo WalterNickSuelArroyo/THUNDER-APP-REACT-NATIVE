@@ -4,15 +4,8 @@ import DefaultRoundedButton from '../../../components/DefaultRoundedButton';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../../navigator/MainStackNavigator';
 import styles from './Styles';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import EmailValidator from '../../../utils/EmailValidator';
-import { ApiRequestHandler } from '../../../../data/sources/remote/api/ApiRequestHandler';
-import { AuthResponse } from '../../../../domain/models/AuthResponse';
-import { defaultErrorResponse, ErrorResponse } from '../../../../domain/models/ErrorResponse';
-import { AuthService } from '../../../../data/sources/remote/services/AuthService';
-import { AuthRepositoryImpl } from '../../../../data/repository/AuthRepositoryImpl';
-import { LoginUseCase } from '../../../../domain/useCases/auth/LoginUseCase';
-import { LoginViewModel } from './LoginViewModel';
 import { container } from '../../../../di/container';
 import { useAuth } from '../../../hooks/useAuth';
 
@@ -27,6 +20,18 @@ export default function LoginScreen({ navigation, route }: Props) {
     const loginViewModel = container.resolve('loginViewModel');
 
     const { authResponse, saveAuthSession } = useAuth();
+
+    useEffect(() => {
+        if (authResponse !== null && authResponse !== undefined) {
+            if (authResponse.user.roles!.length > 1) {
+                navigation.replace('RolesScreen');
+            } else {
+                navigation.replace('ClientHomeScreen')
+            }
+
+        }
+
+    }, [authResponse])
 
     const handleLogin = async () => {
         if (email === '' || password === '') {
@@ -43,6 +48,8 @@ export default function LoginScreen({ navigation, route }: Props) {
 
         if ('token' in response) {
             saveAuthSession(response);
+
+
             console.log('Login exitoso');
         }
         console.log(response);
